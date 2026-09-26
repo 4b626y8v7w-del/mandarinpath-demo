@@ -1,27 +1,218 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>MandarinPath — 5-min Web Demo Trial</title>
-  <meta name="description" content="Interactive 5-minute MandarinPath web demo.">
-  <link rel="stylesheet" href="styles.css">
+  <meta name="description" content="WEB PREVIEW — interactive 5-minute demo of MandarinPath. Not the App Store build." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2322c55e'/%3E%3Ctext x='32' y='42' text-anchor='middle' font-size='28'%3E道%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <main class="page">
-    <header class="brand"><img data-asset="app-icon.png" alt="" class="icon"><div><h1>MandarinPath</h1><p>5-minute demo trial · offline iOS app preview</p></div><b class="badge">WEB PREVIEW</b></header>
-    <section class="phone">
-      <div class="notch"></div>
-      <div class="meter" id="meter" hidden><span>5-min trial</span><span id="stepLabel">Ready</span><i><em id="meterFill"></em></i></div>
-      <section class="screen splash" id="splash"><img data-asset="dragon-idle.png" class="dragon" alt="Red Chinese dragon mascot"><h2>Mandarin that hooks you in</h2><p>Saga-map path · XP &amp; streaks · Practice games.<br>No account. This is a browser taste of the iPhone app.</p><ol><li><b>1</b> Clear one short lesson</li><li><b>2</b> Play Flip Match</li><li><b>3</b> Claim your loot</li></ol><button class="primary" id="start">Start 5-min trial</button><small>~5 minutes · speaker uses device voice if available</small></section>
-      <section class="screen" id="main" hidden><div class="content"><header class="subhead"><h2>Mandarin Path</h2><img data-asset="dragon-idle.png" alt=""></header><div class="stats"><span>🔥 <b id="streak">0</b> streak</span><span>⭐ <b id="xp">0</b> XP</span><span>♥ <b id="hearts">5</b> hearts</span></div><div class="coach" id="coach">Tap the glowing <strong>Hello</strong> node — clear one short lesson for XP.</div><div id="path"></div></div><nav><button class="active" data-tab="learn">🗺<small>Learn</small></button><button data-tab="practice">🎮<small>Practice</small></button><button data-tab="profile">⭐<small>Profile</small></button></nav></section>
-      <section class="overlay" id="lesson" hidden><header class="top"><button class="close" data-close>×</button><i><em id="lessonFill"></em></i><b>♥ <span id="lessonHearts">5</span></b></header><div class="lessonBody" id="lessonBody"></div></section>
-      <section class="overlay center" id="complete" hidden><img data-asset="dragon-celebrate.png" alt="" class="celebrate"><h2>Lesson clear!</h2><strong class="loot">+25 XP</strong><p>🔥 1-day streak</p><button class="primary" id="claim">Claim XP</button></section>
-      <section class="overlay" id="practice" hidden><header class="top"><button class="close" data-close>×</button><h2>Flip Match</h2><b id="score">0/4</b></header><p class="hint">Match Chinese ↔ English. Clear the board for bonus XP.</p><div class="grid" id="grid"></div></section>
-      <section class="overlay center" id="finale" hidden><img data-asset="dragon-celebrate.png" alt="" class="celebrate"><h2>Trial clear!</h2><p>You earned XP and kept a streak alive.</p><p class="muted">The full saga has 8 chapters · 31 lessons · Review, Write &amp; Flip Match offline on your iPhone.</p><button class="primary" data-explore>Keep exploring the demo</button></section>
-    </section>
-    <footer>MandarinPath demo trial · Design tokens from AppTheme · CTA green <code>#22C55E</code></footer>
-  </main>
-  <script src="assets.js"></script><script>document.querySelectorAll('[data-asset]').forEach(function(e){e.src=window.MP_ASSETS[e.dataset.asset]||''})</script><script src="app.js"></script>
+  <div class="page">
+    <header class="marketing">
+      <div class="marketing-brand">
+        <img data-mp="app-icon.png" src="" alt="" class="marketing-icon" width="44" height="44" />
+        <div>
+          <h1>MandarinPath</h1>
+          <p class="tagline">5-minute demo trial · offline iOS app preview</p>
+        </div>
+      </div>
+      <div class="preview-badge" role="status">WEB PREVIEW — not the App Store build</div>
+    </header>
+
+    <div class="phone-wrap">
+      <div class="phone" id="phone">
+        <div class="phone-notch" aria-hidden="true"></div>
+        <div class="phone-screen" id="app">
+
+          <!-- Trial progress strip -->
+          <div class="trial-strip" id="trialStrip" hidden>
+            <div class="trial-strip-top">
+              <span class="trial-label">5-min trial</span>
+              <span class="trial-step-label" id="trialStepLabel">Ready</span>
+            </div>
+            <div class="trial-meter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="trialMeter">
+              <div class="trial-meter-fill" id="trialMeterFill"></div>
+            </div>
+          </div>
+
+          <!-- SPLASH -->
+          <section class="screen screen-splash" id="screenSplash" data-screen="splash">
+            <div class="splash-glow" aria-hidden="true"></div>
+            <img data-mp="dragon-idle.png" src="" alt="Red Chinese dragon mascot" class="splash-dragon" />
+            <h2 class="splash-title">Mandarin that hooks you in</h2>
+            <p class="splash-sub">Saga-map path · XP &amp; streaks · Practice games.<br/>No account. This is a browser taste of the iPhone app.</p>
+            <ul class="splash-beats">
+              <li><span>1</span> Clear one short lesson</li>
+              <li><span>2</span> Play Flip Match</li>
+              <li><span>3</span> Claim your loot</li>
+            </ul>
+            <button type="button" class="btn btn-primary btn-xl" id="btnStartTrial">
+              Start 5-min trial
+            </button>
+            <p class="splash-note">~5 minutes · speaker uses device voice if available</p>
+          </section>
+
+          <!-- MAIN SHELL (tabs) -->
+          <section class="screen screen-main" id="screenMain" data-screen="main" hidden>
+            <div class="main-body" id="mainBody">
+
+              <!-- LEARN -->
+              <div class="tab-panel" id="tabLearn" data-tab="learn">
+                <div class="nav-large">
+                  <h2>Mandarin Path</h2>
+                  <img data-mp="dragon-idle.png" src="" alt="" class="nav-dragon" />
+                </div>
+                <div class="stats-bar" id="statsBar"></div>
+                <button type="button" class="practice-entry" id="practiceEntry" aria-label="Practice">
+                  <div class="practice-entry-icon">
+                    <img data-mp="dragon-idle.png" src="" alt="" />
+                  </div>
+                  <div class="practice-entry-text">
+                    <strong>Practice</strong>
+                    <span>Review · Write · Flip Match</span>
+                  </div>
+                  <span class="due-badge" id="dueBadge" hidden>3</span>
+                  <span class="chev">›</span>
+                </button>
+                <div class="coach-tip" id="learnCoach" hidden></div>
+                <div class="path" id="learnPath"></div>
+              </div>
+
+              <!-- PRACTICE HUB -->
+              <div class="tab-panel" id="tabPractice" data-tab="practice" hidden>
+                <div class="nav-large"><h2>Practice</h2></div>
+                <div class="coach-tip" id="practiceCoach" hidden></div>
+                <div class="mode-cards" id="modeCards"></div>
+              </div>
+
+              <!-- PROFILE -->
+              <div class="tab-panel" id="tabProfile" data-tab="profile" hidden>
+                <div class="nav-large"><h2>Profile</h2></div>
+                <div class="profile-hero">
+                  <div class="avatar">路</div>
+                  <div>
+                    <strong>You</strong>
+                    <span>Mandarin explorer</span>
+                  </div>
+                </div>
+                <div class="stat-list" id="profileStats"></div>
+                <div class="unit-list" id="profileUnits"></div>
+              </div>
+            </div>
+
+            <nav class="tab-bar" aria-label="Main">
+              <button type="button" class="tab active" data-goto="learn" aria-current="page">
+                <span class="tab-ico">🗺</span><span>Learn</span>
+              </button>
+              <button type="button" class="tab" data-goto="practice">
+                <span class="tab-ico">🎮</span><span>Practice</span>
+              </button>
+              <button type="button" class="tab" data-goto="profile">
+                <span class="tab-ico">⭐</span><span>Profile</span>
+              </button>
+            </nav>
+          </section>
+
+          <!-- LESSON OVERLAY -->
+          <section class="screen screen-overlay" id="screenLesson" hidden>
+            <div class="lesson-header">
+              <button type="button" class="icon-btn" id="btnCloseLesson" aria-label="Close lesson">✕</button>
+              <div class="lesson-progress"><div class="lesson-progress-fill" id="lessonProgressFill"></div></div>
+              <div class="hearts" id="lessonHearts"><span>♥</span> <b>5</b></div>
+            </div>
+            <div class="lesson-body" id="lessonBody"></div>
+            <div class="feedback-banner" id="feedbackBanner" hidden></div>
+          </section>
+
+          <!-- LESSON COMPLETE -->
+          <section class="screen screen-overlay screen-celebrate" id="screenComplete" hidden>
+            <div class="celebrate-inner">
+              <div class="sparkles" aria-hidden="true" id="sparkles"></div>
+              <img data-mp="dragon-celebrate.png" src="" alt="" class="celebrate-dragon" />
+              <h2>Lesson clear!</h2>
+              <p class="xp-pop" id="completeXP">+25 XP</p>
+              <p class="streak-call" id="completeStreak"><span>🔥</span> 1-day streak</p>
+              <button type="button" class="btn btn-primary btn-xl" id="btnClaimXP">Claim XP</button>
+              <button type="button" class="btn btn-ghost" id="btnToPractice" hidden>Practice next →</button>
+            </div>
+          </section>
+
+          <!-- FLIP MATCH -->
+          <section class="screen screen-overlay" id="screenFlip" hidden>
+            <div class="lesson-header">
+              <button type="button" class="icon-btn" id="btnCloseFlip" aria-label="Close">✕</button>
+              <div class="flip-title">Flip Match</div>
+              <div class="flip-score" id="flipScore">0/8</div>
+            </div>
+            <p class="flip-hint">Match Chinese ↔ English. Clear the board for XP.</p>
+            <div class="flip-grid" id="flipGrid"></div>
+          </section>
+
+          <!-- REVIEW (lite) -->
+          <section class="screen screen-overlay" id="screenReview" hidden>
+            <div class="lesson-header">
+              <button type="button" class="icon-btn" id="btnCloseReview" aria-label="Close">✕</button>
+              <div class="lesson-progress"><div class="lesson-progress-fill" id="reviewProgressFill"></div></div>
+              <div class="hearts" id="reviewHearts"><span>♥</span> <b>5</b></div>
+            </div>
+            <div class="lesson-body" id="reviewBody"></div>
+            <div class="feedback-banner" id="reviewFeedback" hidden></div>
+          </section>
+
+          <!-- WRITE TEASE -->
+          <section class="screen screen-overlay" id="screenWrite" hidden>
+            <div class="lesson-header">
+              <button type="button" class="icon-btn" id="btnCloseWrite" aria-label="Close">✕</button>
+              <div class="flip-title">Write</div>
+              <div></div>
+            </div>
+            <div class="write-wrap">
+              <p class="write-prompt">Trace <strong id="writeGlyph">你</strong> · <span id="writePinyin">nǐ</span></p>
+              <canvas id="writeCanvas" width="280" height="280" aria-label="Trace character"></canvas>
+              <div class="write-actions">
+                <button type="button" class="btn btn-secondary" id="btnRedraw">Redraw</button>
+                <button type="button" class="btn btn-primary" id="btnWroteIt">I wrote it</button>
+              </div>
+              <p class="write-note">Self-check · full stroke coaching is in the iPhone app</p>
+            </div>
+          </section>
+
+          <!-- TRIAL FINALE -->
+          <section class="screen screen-overlay screen-finale" id="screenFinale" hidden>
+            <div class="celebrate-inner">
+              <img data-mp="dragon-celebrate.png" src="" alt="" class="celebrate-dragon" />
+              <h2>Trial clear!</h2>
+              <p class="finale-stats" id="finaleStats">You earned XP and kept a streak alive.</p>
+              <p class="finale-copy">The full saga has 8 chapters · 31 lessons · Review, Write &amp; Flip Match offline on your iPhone.</p>
+              <a class="btn btn-primary btn-xl" id="btnInstall" href="#">Install on iPhone for full saga</a>
+              <button type="button" class="btn btn-ghost" id="btnKeepExploring">Keep exploring the demo</button>
+              <p class="splash-note">WEB PREVIEW — not installable from this page</p>
+            </div>
+          </section>
+
+          <!-- Toast -->
+          <div class="toast" id="toast" hidden role="status"></div>
+          <!-- XP float -->
+          <div class="xp-float" id="xpFloat" hidden>+XP</div>
+
+        </div>
+      </div>
+    </div>
+
+    <footer class="page-foot">
+      <p>MandarinPath demo trial · Design tokens from AppTheme · Red dragon = mascot · CTA green <code>#22C55E</code></p>
+      <p>Open this file locally: <code>MandarinPath/web-preview/index.html</code></p>
+    </footer>
+  </div>
+  <script src="assets.js"></script>
+  <script>
+    document.querySelectorAll("[data-mp]").forEach(function (el) {
+      var u = window.MP_ASSETS && window.MP_ASSETS[el.getAttribute("data-mp")];
+      if (u) el.src = u;
+    });
+  </script>
+  <script src="app.js"></script>
 </body>
 </html>
