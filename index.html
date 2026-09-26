@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>MandarinPath — 5-min Web Demo Trial</title>
+  <meta name="description" content="Interactive 5-minute MandarinPath web demo.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="page">
+    <header class="brand"><img data-asset="app-icon.png" alt="" class="icon"><div><h1>MandarinPath</h1><p>5-minute demo trial · offline iOS app preview</p></div><b class="badge">WEB PREVIEW</b></header>
+    <section class="phone">
+      <div class="notch"></div>
+      <div class="meter" id="meter" hidden><span>5-min trial</span><span id="stepLabel">Ready</span><i><em id="meterFill"></em></i></div>
+      <section class="screen splash" id="splash"><img data-asset="dragon-idle.png" class="dragon" alt="Red Chinese dragon mascot"><h2>Mandarin that hooks you in</h2><p>Saga-map path · XP &amp; streaks · Practice games.<br>No account. This is a browser taste of the iPhone app.</p><ol><li><b>1</b> Clear one short lesson</li><li><b>2</b> Play Flip Match</li><li><b>3</b> Claim your loot</li></ol><button class="primary" id="start">Start 5-min trial</button><small>~5 minutes · speaker uses device voice if available</small></section>
+      <section class="screen" id="main" hidden><div class="content"><header class="subhead"><h2>Mandarin Path</h2><img data-asset="dragon-idle.png" alt=""></header><div class="stats"><span>🔥 <b id="streak">0</b> streak</span><span>⭐ <b id="xp">0</b> XP</span><span>♥ <b id="hearts">5</b> hearts</span></div><div class="coach" id="coach">Tap the glowing <strong>Hello</strong> node — clear one short lesson for XP.</div><div id="path"></div></div><nav><button class="active" data-tab="learn">🗺<small>Learn</small></button><button data-tab="practice">🎮<small>Practice</small></button><button data-tab="profile">⭐<small>Profile</small></button></nav></section>
+      <section class="overlay" id="lesson" hidden><header class="top"><button class="close" data-close>×</button><i><em id="lessonFill"></em></i><b>♥ <span id="lessonHearts">5</span></b></header><div class="lessonBody" id="lessonBody"></div></section>
+      <section class="overlay center" id="complete" hidden><img data-asset="dragon-celebrate.png" alt="" class="celebrate"><h2>Lesson clear!</h2><strong class="loot">+25 XP</strong><p>🔥 1-day streak</p><button class="primary" id="claim">Claim XP</button></section>
+      <section class="overlay" id="practice" hidden><header class="top"><button class="close" data-close>×</button><h2>Flip Match</h2><b id="score">0/4</b></header><p class="hint">Match Chinese ↔ English. Clear the board for bonus XP.</p><div class="grid" id="grid"></div></section>
+      <section class="overlay center" id="finale" hidden><img data-asset="dragon-celebrate.png" alt="" class="celebrate"><h2>Trial clear!</h2><p>You earned XP and kept a streak alive.</p><p class="muted">The full saga has 8 chapters · 31 lessons · Review, Write &amp; Flip Match offline on your iPhone.</p><button class="primary" data-explore>Keep exploring the demo</button></section>
+    </section>
+    <footer>MandarinPath demo trial · Design tokens from AppTheme · CTA green <code>#22C55E</code></footer>
+  </main>
+  <script src="assets.js"></script><script>document.querySelectorAll('[data-asset]').forEach(function(e){e.src=window.MP_ASSETS[e.dataset.asset]||''})</script><script src="app.js"></script>
+</body>
+</html>
