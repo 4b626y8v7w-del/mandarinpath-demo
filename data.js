@@ -137,6 +137,13 @@
         answerPinyin: "nǐ hǎo",
         answerEn: "hi / hello",
       },
+      {
+        type: "speakBack",
+        promptZh: "你好",
+        promptPinyin: "nǐ hǎo",
+        promptEn: "hi / hello",
+        maxDurationSec: 4,
+      },
     ],
   };
 
@@ -185,4 +192,3 @@
   window.MP_pairLabel = pairLabel;
   window.MP_resolvePair = resolvePair;
 })();
-
