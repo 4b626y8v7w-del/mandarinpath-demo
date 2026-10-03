@@ -192,3 +192,4 @@
   window.MP_pairLabel = pairLabel;
   window.MP_resolvePair = resolvePair;
 })();
+
