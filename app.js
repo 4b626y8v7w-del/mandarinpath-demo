@@ -101,3 +101,171 @@
     state.lessonIdx = 0;
     state.lessonLocked = false;
   }
+
+  /* ---------- Audio: WAV SFX (distinct correct/wrong) + soft Web Audio fallbacks ---------- */
+  let audioCtx = null;
+  const prefersReducedMotion =
+    typeof window.matchMedia === "function" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let sfxMuted = false;
+
+  const wavCorrect = new Audio((window.MP_SFX && window.MP_SFX.correct) || "assets/sfx/sfx_correct.wav");
+  const wavWrong = new Audio((window.MP_SFX && window.MP_SFX.wrong) || "assets/sfx/sfx_wrong.wav");
+  wavCorrect.preload = "auto";
+  wavWrong.preload = "auto";
+  wavCorrect.volume = 0.48;
+  wavWrong.volume = 0.48;
+
+  function ensureAudio() {
+    if (!audioCtx) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (AC) audioCtx = new AC();
+    }
+    if (audioCtx && audioCtx.state === "suspended") audioCtx.resume();
+    return audioCtx;
+  }
+  function tone(freq, dur, type, gain) {
+    const ctx = ensureAudio();
+    if (!ctx) return;
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.type = type || "sine";
+    o.frequency.value = freq;
+    g.gain.value = gain || 0.08;
+    o.connect(g);
+    g.connect(ctx.destination);
+    const now = ctx.currentTime;
+    g.gain.setValueAtTime(gain || 0.08, now);
+    g.gain.exponentialRampToValueAtTime(0.001, now + dur);
+    o.start(now);
+    o.stop(now + dur + 0.02);
+  }
+  function playWav(el, fallback) {
+    if (sfxMuted || prefersReducedMotion) return;
+    try {
+      el.currentTime = 0;
+      const p = el.play();
+      if (p && typeof p.catch === "function") p.catch(() => fallback && fallback());
+    } catch (_) {
+      if (fallback) fallback();
+    }
+  }
+  function sfxCorrect() {
+    playWav(wavCorrect, () => {
+      tone(523, 0.08, "sine", 0.07);
+      setTimeout(() => tone(659, 0.1, "sine", 0.07), 70);
+      setTimeout(() => tone(784, 0.14, "triangle", 0.06), 140);
+    });
+  }
+  function sfxWrong() {
+    playWav(wavWrong, () => {
+      tone(180, 0.18, "triangle", 0.06);
+    });
+  }
+  function sfxComplete() {
+    if (sfxMuted || prefersReducedMotion) return;
+    [392, 523, 659, 784].forEach((f, i) => setTimeout(() => tone(f, 0.2, "sine", 0.07), i * 90));
+  }
+  function sfxClaim() {
+    if (sfxMuted || prefersReducedMotion) return;
+    tone(880, 0.08, "sine", 0.06);
+    setTimeout(() => tone(1175, 0.16, "triangle", 0.07), 60);
+  }
+  function sfxMatch() {
+    if (sfxMuted || prefersReducedMotion) return;
+    tone(660, 0.08, "sine", 0.06);
+    setTimeout(() => tone(990, 0.12, "sine", 0.06), 50);
+  }
+
+  /* ---------- Speech (Kevin override: prefer male, else any zh incl. female; always speak) ---------- */
+  const MALE_VOICE_RE = /kangkang|yunjian|yunyang|yunxi|yunye|yunjie|li[-_\s]?mu|\bmale\b|男/i;
+  const FEMALE_VOICE_RE = /tingting|ting[-_\s]?ting|xiaoxiao|yaoyao|huihui|yu[-_\s]?shu|\bfemale\b|女/i;
+  const CJK_RE = /[\u3400-\u9FFF\uF900-\uFAFF]/;
+
+  function isMandarinText(s) {
+    return !!(s && CJK_RE.test(String(s)));
+  }
+
+  function pickMaleZhVoice() {
+    if (!window.speechSynthesis) return null;
+    const voices = speechSynthesis.getVoices() || [];
+    const mainland = voices.filter((v) => /zh[-_]?CN|zh[-_]?Hans/i.test(v.lang));
+    const pool = mainland.length
+      ? mainland
+      : voices.filter((v) => /zh|Chinese|中文/i.test(v.lang + v.name));
+    const male = pool.find((v) => MALE_VOICE_RE.test(v.name) && !FEMALE_VOICE_RE.test(v.name));
+    return male || pool[0] || null;
+  }
+
+  function speak(text) {
+    if (!window.speechSynthesis || !text) return;
+    const zhVoice = pickMaleZhVoice();
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(String(text));
+    u.lang = "zh-CN";
+    u.rate = 0.92;
+    if (zhVoice) u.voice = zhVoice;
+    const btn = document.querySelector(".speaker-btn.speaking, .speaker-btn:focus, .speakable.speaking");
+    const mark = document.querySelector(".speaker-btn, .speakable.active-speak");
+    if (mark) mark.classList.add("speaking");
+    u.onend = () => {
+      document.querySelectorAll(".speaking").forEach((el) => el.classList.remove("speaking"));
+    };
+    speechSynthesis.speak(u);
+  }
+  if (window.speechSynthesis) {
+    speechSynthesis.getVoices();
+    speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
+  }
+
+
+  function mpAsset(name) {
+    const file = /\.png$/i.test(name) ? name : name + ".png";
+    return (window.MP_ASSETS && window.MP_ASSETS[file]) || "assets/" + file;
+  }
+
+  /* ---------- DOM helpers ---------- */
+  const $ = (sel, root) => (root || document).querySelector(sel);
+  const $$ = (sel, root) => Array.from((root || document).querySelectorAll(sel));
+
+  function showScreen(id) {
+    ["screenSplash", "screenMain", "screenLesson", "screenComplete", "screenFlip", "screenReview", "screenWrite", "screenFinale"]
+      .forEach((s) => {
+        const el = document.getElementById(s);
+        if (el) el.hidden = s !== id;
+      });
+  }
+
+  function toast(msg, dragon) {
+    const el = $("#toast");
+    el.hidden = false;
+    el.innerHTML = (dragon ? `<img src="${mpAsset(dragon)}" alt="" />` : "") + `<span>${msg}</span>`;
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => { el.hidden = true; }, 2200);
+  }
+
+  function xpFloat(amount) {
+    const el = $("#xpFloat");
+    el.textContent = `+${amount} XP`;
+    el.hidden = false;
+    el.style.animation = "none";
+    void el.offsetWidth;
+    el.style.animation = "";
+    clearTimeout(xpFloat._t);
+    xpFloat._t = setTimeout(() => { el.hidden = true; }, 900);
+  }
+
+  function sparkleBurst() {
+    const box = $("#sparkles");
+    if (!box) return;
+    box.innerHTML = "";
+    for (let i = 0; i < 10; i++) {
+      const s = document.createElement("span");
+      s.className = "sparkle";
+      s.textContent = "\u2728";
+      s.style.left = 10 + Math.random() * 80 + "%";
+      s.style.bottom = Math.random() * 30 + "%";
+      s.style.animationDelay = Math.random() * 0.3 + "s";
+      box.appendChild(s);
+    }
+  }
