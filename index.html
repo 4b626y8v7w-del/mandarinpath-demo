@@ -87,15 +87,14 @@
                 <div class="mode-cards" id="modeCards"></div>
               </div>
 
-              <!-- PROFILE -->
+              <!-- PROFILE — dragon evolution -->
               <div class="tab-panel" id="tabProfile" data-tab="profile" hidden>
-                <div class="nav-large"><h2>Profile</h2></div>
-                <div class="profile-hero">
-                  <div class="avatar">路</div>
-                  <div>
-                    <strong>You</strong>
-                    <span>Mandarin explorer</span>
-                  </div>
+                <div class="nav-large"><h2>Your dragon</h2></div>
+                <div class="profile-hero" id="profileHero" role="img" aria-label="Your dragon, training companion.">
+                  <img id="profileDragon" data-mp="dragon-egg.png" src="" alt="" class="profile-dragon" />
+                  <strong id="profileTitle">Something’s waking…</strong>
+                  <span id="profileSubtitle">Stage 1/5 · 0 major tests cleared</span>
+                  <div class="fuel-chips" id="profileChips"></div>
                 </div>
                 <div class="stat-list" id="profileStats"></div>
                 <div class="unit-list" id="profileUnits"></div>
@@ -209,8 +208,9 @@
   <script src="assets.js"></script>
   <script>
     document.querySelectorAll("[data-mp]").forEach(function (el) {
-      var u = window.MP_ASSETS && window.MP_ASSETS[el.getAttribute("data-mp")];
-      if (u) el.src = u;
+      var key = el.getAttribute("data-mp");
+      var u = window.MP_ASSETS && window.MP_ASSETS[key];
+      el.src = u || ("assets/" + key);
     });
   </script>
   <script src="data.js"></script>
