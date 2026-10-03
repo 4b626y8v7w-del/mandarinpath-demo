@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>MandarinPath — 5-min Web Demo Trial</title>
-  <meta name="description" content="WEB PREVIEW — interactive 5-minute demo of MandarinPath. Not the App Store build." />
+  <title>MandarinPath</title>
+  <meta name="description" content="MandarinPath — the full path in the browser. Eight chapters, every lesson, practice, and your dragon. Works offline." />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2322c55e'/%3E%3Ctext x='32' y='42' text-anchor='middle' font-size='28'%3E道%3C/text%3E%3C/svg%3E" />
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -15,10 +15,9 @@
         <img data-mp="app-icon.png" src="" alt="" class="marketing-icon" width="44" height="44" />
         <div>
           <h1>MandarinPath</h1>
-          <p class="tagline">5-minute demo trial · offline iOS app preview</p>
+          <p class="tagline">Full path · works offline</p>
         </div>
       </div>
-      <div class="preview-badge" role="status">WEB PREVIEW — not the App Store build</div>
     </header>
 
     <div class="phone-wrap">
@@ -26,32 +25,21 @@
         <div class="phone-notch" aria-hidden="true"></div>
         <div class="phone-screen" id="app">
 
-          <!-- Trial progress strip -->
-          <div class="trial-strip" id="trialStrip" hidden>
-            <div class="trial-strip-top">
-              <span class="trial-label">5-min trial</span>
-              <span class="trial-step-label" id="trialStepLabel">Ready</span>
-            </div>
-            <div class="trial-meter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="trialMeter">
-              <div class="trial-meter-fill" id="trialMeterFill"></div>
-            </div>
-          </div>
-
           <!-- SPLASH -->
           <section class="screen screen-splash" id="screenSplash" data-screen="splash">
             <div class="splash-glow" aria-hidden="true"></div>
             <img data-mp="dragon-idle.png" src="" alt="Red Chinese dragon mascot" class="splash-dragon" />
             <h2 class="splash-title">Mandarin that hooks you in</h2>
-            <p class="splash-sub">Saga-map path · XP &amp; streaks · Practice games.<br/>No account. This is a browser taste of the iPhone app.</p>
+            <p class="splash-sub">Saga-map path · XP &amp; streaks · Practice games.<br/>No account. The whole path is in this browser.</p>
             <ul class="splash-beats">
-              <li><span>1</span> Clear one short lesson</li>
-              <li><span>2</span> Play Flip Match</li>
-              <li><span>3</span> Claim your loot</li>
+              <li><span>1</span> Clear lessons in order</li>
+              <li><span>2</span> Practice Review, Write, and Flip Match</li>
+              <li><span>3</span> Grow your dragon on the major tests</li>
             </ul>
-            <button type="button" class="btn btn-primary btn-xl" id="btnStartTrial">
-              Start 5-min trial
+            <button type="button" class="btn btn-primary btn-xl" id="btnStart">
+              Start learning
             </button>
-            <p class="splash-note">~5 minutes · speaker uses device voice if available</p>
+            <p class="splash-note">Works offline · speaker uses this device’s voice</p>
           </section>
 
           <!-- MAIN SHELL (tabs) -->
@@ -174,20 +162,7 @@
                 <button type="button" class="btn btn-secondary" id="btnRedraw">Redraw</button>
                 <button type="button" class="btn btn-primary" id="btnWroteIt">I wrote it</button>
               </div>
-              <p class="write-note">Self-check · full stroke coaching is in the iPhone app</p>
-            </div>
-          </section>
-
-          <!-- TRIAL FINALE -->
-          <section class="screen screen-overlay screen-finale" id="screenFinale" hidden>
-            <div class="celebrate-inner">
-              <img data-mp="dragon-celebrate.png" src="" alt="" class="celebrate-dragon" />
-              <h2>Trial clear!</h2>
-              <p class="finale-stats" id="finaleStats">You earned XP and kept a streak alive.</p>
-              <p class="finale-copy">The full saga has 8 chapters · 31 lessons · Review, Write &amp; Flip Match offline on your iPhone.</p>
-              <a class="btn btn-primary btn-xl" id="btnInstall" href="../DEVICE_INSTALL.md">Install on iPhone for full saga</a>
-              <button type="button" class="btn btn-ghost" id="btnKeepExploring">Keep exploring the demo</button>
-              <p class="splash-note">WEB PREVIEW — not installable from this page</p>
+              <p class="write-note">Self-check · trace the character, then confirm.</p>
             </div>
           </section>
 
@@ -201,8 +176,8 @@
     </div>
 
     <footer class="page-foot">
-      <p>MandarinPath demo trial · Design tokens from AppTheme · Red dragon = mascot · CTA green <code>#22C55E</code></p>
-      <p>Open this file locally: <code>MandarinPath/web-preview/index.html</code></p>
+      <p>MandarinPath · full offline path · Confirm green <code>#22C55E</code></p>
+      <p>Bundled for offline use. No account.</p>
     </footer>
   </div>
   <script src="assets.js"></script>
